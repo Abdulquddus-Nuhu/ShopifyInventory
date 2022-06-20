@@ -13,9 +13,7 @@ namespace ShopifyInventory.Data
         }
 
         public DbSet<Item>? Items { get; set; }
+        public DbSet<ItemModel>? ItemModel { get; set; }
 
-        public DbSet<ShopifyInventory.Models.ItemModel>? ItemModel { get; set; }
-
-        //public DbSet<ShopifyInventory.Models.ItemModel>? ItemModel { get; set; }
     }
 }

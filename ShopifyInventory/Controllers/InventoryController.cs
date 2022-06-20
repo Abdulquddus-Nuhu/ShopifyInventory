@@ -143,7 +143,7 @@ namespace ShopifyInventory.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> DeletedItems()
+        public IActionResult Archive()
         {
             var items = _context.Items!.Where(i => i.IsDeleted == true).OrderBy(i => i.DeletedAt).Select(i => new ItemModel()
             {
@@ -152,7 +152,7 @@ namespace ShopifyInventory.Controllers
                 Description = i.Description,
                 Quantity = i.Quantity,
                 DeletedAt = i.DeletedAt,
-                DeletionComments = i.DeletionComments
+                DeletionComments = i.DeletionComments!
             }).ToList();
             return View(items);
         }
@@ -161,7 +161,7 @@ namespace ShopifyInventory.Controllers
         public async Task<IActionResult> UnDeleteItem(Guid id)
         {
             var item = await _context.Items!.FindAsync(id);
-            item.IsDeleted = false;
+            item!.IsDeleted = false;
            
             try
             {
@@ -189,7 +189,7 @@ namespace ShopifyInventory.Controllers
                 _logger.LogInformation(ex.Message);
                 ModelState.AddModelError("Database", "Error while saving to database");
             }
-            return RedirectToAction(nameof(DeletedItems));
+            return RedirectToAction(nameof(Archive));
         }
     }
 }
