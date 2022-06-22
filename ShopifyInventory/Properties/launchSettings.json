@@ -3,9 +3,6 @@
     "ShopifyInventory": {
       "commandName": "Project",
       "launchBrowser": true,
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Production"
-      },
       "applicationUrl": "https://localhost:14566;http://localhost:14567"
     },
     "Docker": {
@@ -14,6 +11,15 @@
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
       "publishAllPorts": true,
       "useSSL": true
+    },
+    "WSL": {
+      "commandName": "WSL2",
+      "launchBrowser": true,
+      "launchUrl": "https://localhost:14566",
+      "environmentVariables": {
+        "ASPNETCORE_URLS": "https://localhost:14566;http://localhost:14567"
+      },
+      "distributionName": ""
     }
   }
 }

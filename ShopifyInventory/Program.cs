@@ -1,13 +1,16 @@
 using Microsoft.EntityFrameworkCore;
 using ShopifyInventory.Data;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+{
+    EnvironmentName = Environments.Production
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
 //Add DbContext service
-builder.Services.AddDbContext<ShopifyDbContext>(options => options.UseNpgsql                        (builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<ShopifyDbContext>(options => options.UseNpgsql                        (builder.Configuration.GetConnectionString("ProductionConnection")));
 
 //Add logging service
 builder.Services.AddLogging();
