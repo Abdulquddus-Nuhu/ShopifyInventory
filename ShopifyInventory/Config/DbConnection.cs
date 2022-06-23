@@ -4,7 +4,7 @@
     {
         public static string GetHerokuConnectionString()
         {
-            string connectionUrl = Environment.GetEnvironmentVariable("DATABASE_URL")!;
+            string connectionUrl = Environment.GetEnvironmentVariable("URI")!;
 
             var databaseUri = new Uri(connectionUrl);
 
