@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using ShopifyInventory.Config;
 using ShopifyInventory.Data;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
@@ -10,7 +11,7 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 builder.Services.AddControllersWithViews();
 
 //Add DbContext service
-builder.Services.AddDbContext<ShopifyDbContext>(options => options.UseNpgsql                        (builder.Configuration.GetConnectionString("ProductionConnection")));
+builder.Services.AddDbContext<ShopifyDbContext>(options => options.UseNpgsql                        (builder.Configuration.GetConnectionString(DbConnection.GetHerokuConnectionString())));
 
 //Add logging service
 builder.Services.AddLogging();
