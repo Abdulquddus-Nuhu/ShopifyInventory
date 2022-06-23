@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using ShopifyInventory.Config;
 using ShopifyInventory.Data;
 
@@ -11,10 +12,14 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 builder.Services.AddControllersWithViews();
 
 //Add DbContext service
-builder.Services.AddDbContext<ShopifyDbContext>(options => options.UseNpgsql                        (builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<ShopifyDbContext>(options => options.UseNpgsql                        (builder.Configuration.GetConnectionString(DbConnection.GetHerokuConnectionString())));
 
 //Add logging service
 builder.Services.AddLogging();
+
+builder.Host.UseSerilog((hostContext, services, configuration) => {
+    configuration.WriteTo.Console();
+});
 
 //Apply Migrations
 builder.Services.AddHostedService<InitMigration>();
