@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 builder.Services.AddControllersWithViews();
 
 //Add DbContext service
-builder.Services.AddDbContext<ShopifyDbContext>(options => options.UseNpgsql                        (builder.Configuration.GetConnectionString(DbConnection.GetHerokuConnectionString())));
+builder.Services.AddDbContext<ShopifyDbContext>(options => options.UseNpgsql                        (builder.Configuration.GetConnectionString("DefaultConnection")));
 
 //Add logging service
 builder.Services.AddLogging();
