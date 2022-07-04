@@ -20,3 +20,4 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "ShopifyInventory.dll"]
+CMD ASPNETCORE_URLS=http://*:$PORT dotnet ShopifyInventory.dll

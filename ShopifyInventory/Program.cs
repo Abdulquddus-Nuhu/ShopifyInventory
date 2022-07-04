@@ -5,14 +5,48 @@ using ShopifyInventory.Data;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
-    EnvironmentName = Environments.Production
+    EnvironmentName = Environments.Development
 });
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+var defaultConnectionString = string.Empty;
+
+if (builder.Environment.EnvironmentName == "Development")
+{
+    defaultConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+}
+else
+{
+    // Use connection string provided at runtime by Heroku.
+    var connectionUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+
+    connectionUrl = connectionUrl.Replace("postgres://", string.Empty);
+    var userPassSide = connectionUrl.Split("@")[0];
+    var hostSide = connectionUrl.Split("@")[1];
+
+    var user = userPassSide.Split(":")[0];
+    var password = userPassSide.Split(":")[1];
+    var host = hostSide.Split("/")[0];
+    var database = hostSide.Split("/")[1].Split("?")[0];
+
+    defaultConnectionString = $"Host={host};Database={database};Username={user};Password={password};SSL Mode=Require;Trust Server Certificate=true";
+}
+
 //Add DbContext service
-builder.Services.AddDbContext<ShopifyDbContext>(options => options.UseNpgsql                        (builder.Configuration.GetConnectionString(DbConnection.GetHerokuConnectionString())));
+builder.Services.AddDbContext<ShopifyDbContext>(options => options.UseNpgsql(defaultConnectionString));
+
+var serviceProvider = builder.Services.BuildServiceProvider();
+try
+{
+    var dbContext = serviceProvider.GetRequiredService<ShopifyDbContext>();
+    dbContext.Database.Migrate();
+}
+catch(Exception ex)
+{
+    
+}
 
 //Add logging service
 builder.Services.AddLogging();
@@ -23,6 +57,11 @@ builder.Host.UseSerilog((hostContext, services, configuration) => {
 
 //Apply Migrations
 builder.Services.AddHostedService<InitMigration>();
+
+//Dynamic port for Docker on Heroku
+//var port = Environment.GetEnvironmentVariable("PORT");
+//builder.WebHost.UseUrls($"http://+:{port}");
+
 
 var app = builder.Build();
 
