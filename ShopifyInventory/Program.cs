@@ -5,7 +5,7 @@ using ShopifyInventory.Data;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
-    EnvironmentName = Environments.Development
+    EnvironmentName = Environments.Production
 });
 
 // Add services to the container.
