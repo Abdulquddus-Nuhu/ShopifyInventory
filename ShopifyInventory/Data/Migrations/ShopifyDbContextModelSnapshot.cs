@@ -53,7 +53,7 @@ namespace ShopifyInventory.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Items");
+                    b.ToTable("Items", (string)null);
                 });
 
             modelBuilder.Entity("ShopifyInventory.Models.ItemModel", b =>
@@ -82,7 +82,7 @@ namespace ShopifyInventory.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ItemModel");
+                    b.ToTable("ItemModel", (string)null);
                 });
 #pragma warning restore 612, 618
         }

@@ -2,11 +2,19 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using ShopifyInventory.Config;
 using ShopifyInventory.Data;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
-    EnvironmentName = Environments.Production
+    EnvironmentName = Environments.Development
 });
+//var connectionString = builder.Configuration.GetConnectionString("ShopifyInventoryContextConnection") ?? throw new InvalidOperationException("Connection string 'ShopifyInventoryContextConnection' not found.");
+
+//builder.Services.AddDbContext<ShopifyInventoryContext>(options =>
+//    options.UseSqlServer(connectionString));
+
+//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+//    .AddEntityFrameworkStores<ShopifyInventoryContext>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -16,6 +24,9 @@ builder.Services.AddDatabase(builder.Environment);
 
 //Apply Migrations
 builder.Services.AddHostedService<InitMigration>();
+
+//Add Authentication
+builder.Services.AddAuth();
 
 //Add logging service
 builder.Services.AddLogging();
@@ -44,6 +55,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseAuthentication();
 
 app.UseAuthorization();
 
