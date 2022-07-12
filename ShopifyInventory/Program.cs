@@ -8,13 +8,6 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
     EnvironmentName = Environments.Development
 });
-//var connectionString = builder.Configuration.GetConnectionString("ShopifyInventoryContextConnection") ?? throw new InvalidOperationException("Connection string 'ShopifyInventoryContextConnection' not found.");
-
-//builder.Services.AddDbContext<ShopifyInventoryContext>(options =>
-//    options.UseSqlServer(connectionString));
-
-//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-//    .AddEntityFrameworkStores<ShopifyInventoryContext>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -29,7 +22,7 @@ builder.Services.AddHostedService<InitMigration>();
 builder.Services.AddAuth();
 
 //Add logging service
-builder.Services.AddLogging();
+//builder.Services.AddLogging();
 
 builder.Host.UseSerilog((hostContext, services, configuration) => {
     configuration.WriteTo.Console();
@@ -62,5 +55,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapRazorPages();
 
 app.Run();
