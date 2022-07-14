@@ -3,6 +3,8 @@ using Serilog;
 using ShopifyInventory.Config;
 using ShopifyInventory.Data;
 using Microsoft.AspNetCore.Identity;
+using ShopifyInventory.Services;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
@@ -27,6 +29,10 @@ builder.Services.AddAuth();
 builder.Host.UseSerilog((hostContext, services, configuration) => {
     configuration.WriteTo.Console();
 });
+
+//Register Email Service
+builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection("Smtp"));
+builder.Services.AddTransient<IEmailSender, SmtpEmailSender>();
 
 
 //Dynamic port for Docker on Heroku
