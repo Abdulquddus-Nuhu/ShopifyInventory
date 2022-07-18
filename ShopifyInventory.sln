@@ -5,7 +5,7 @@ VisualStudioVersion = 17.2.32505.173
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopifyInventory", "ShopifyInventory\ShopifyInventory.csproj", "{6A1DF52D-61F2-4F4D-9252-62A758727208}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShopifyInventory.Tests", "ShopifyInventory.Tests\ShopifyInventory.Tests.csproj", "{C957A5EA-E0C3-4014-9163-F4B498477974}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopifyInventory.Tests", "ShopifyInventory.Tests\ShopifyInventory.Tests.csproj", "{C957A5EA-E0C3-4014-9163-F4B498477974}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

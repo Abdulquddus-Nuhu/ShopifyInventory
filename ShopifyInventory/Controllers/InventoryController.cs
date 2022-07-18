@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ShopifyInventory.Data;
 using ShopifyInventory.Data.Entities;
 using ShopifyInventory.Models;
@@ -6,6 +7,7 @@ using System.Data.Common;
 
 namespace ShopifyInventory.Controllers
 {
+    [Authorize]
     public class InventoryController : Controller
     {
         private readonly ShopifyDbContext _context;
@@ -21,7 +23,7 @@ namespace ShopifyInventory.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var items = _context.Items!.Where(i => i.IsDeleted == false).OrderBy(i => i.Created).Select(i => new ItemModel() 
+            var items = _context.Items!.Where(i => !i.IsDeleted).OrderBy(i => i.Created).Select(i => new ItemModel() 
             { 
                 Id = i.Id,
                 Name = i.Name,
@@ -88,7 +90,7 @@ namespace ShopifyInventory.Controllers
         {
             var item = await _context.Items!.FindAsync(itemModel.Id);
 
-            item.Description = itemModel.Description;
+            item!.Description = itemModel.Description;
             item.Quantity = itemModel.Quantity;
             item.Name = itemModel.Name;
 
@@ -125,7 +127,7 @@ namespace ShopifyInventory.Controllers
         public async Task<IActionResult> Delete(ItemModel itemModel)
         {
             var item = await _context.Items!.FindAsync(itemModel.Id);
-            item.IsDeleted = true;
+            item!.IsDeleted = true;
             item.DeletionComments = itemModel.DeletionComments;
             item.DeletedAt = DateTime.UtcNow;
 
@@ -145,7 +147,7 @@ namespace ShopifyInventory.Controllers
         [HttpGet]
         public IActionResult Archive()
         {
-            var items = _context.Items!.Where(i => i.IsDeleted == true).OrderBy(i => i.DeletedAt).Select(i => new ItemModel()
+            var items = _context.Items!.Where(i => i.IsDeleted).OrderBy(i => i.DeletedAt).Select(i => new ItemModel()
             {
                 Id = i.Id,
                 Name = i.Name,
@@ -178,7 +180,7 @@ namespace ShopifyInventory.Controllers
         public async Task<IActionResult> PermanentDelete(ItemModel itemModel)
         {
             var item = await _context.Items!.FindAsync(itemModel.Id);
-            _context.Items.Remove(item);
+            _context.Items.Remove(item!);
 
             try
             {
