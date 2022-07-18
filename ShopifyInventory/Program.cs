@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
-    EnvironmentName = Environments.Development
+    EnvironmentName = Environments.Production
 });
 
 // Add services to the container.
@@ -24,8 +24,6 @@ builder.Services.AddHostedService<InitMigration>();
 builder.Services.AddAuth();
 
 //Add logging service
-//builder.Services.AddLogging();
-
 builder.Host.UseSerilog((hostContext, services, configuration) => {
     configuration.WriteTo.Console();
 });
@@ -33,6 +31,8 @@ builder.Host.UseSerilog((hostContext, services, configuration) => {
 //Register Email Service
 builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection("Smtp"));
 builder.Services.AddTransient<IEmailSender, SmtpEmailSender>();
+
+builder.Services.AddHttpContextAccessor();
 
 
 //Dynamic port for Docker on Heroku
