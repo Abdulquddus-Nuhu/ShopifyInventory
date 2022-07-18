@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
-    EnvironmentName = Environments.Production
+    EnvironmentName = Environments.Development
 });
 
 // Add services to the container.

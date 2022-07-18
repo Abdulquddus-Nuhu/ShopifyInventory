@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ShopifyInventory.Data;
 using ShopifyInventory.Data.Entities;
 using ShopifyInventory.Models;
@@ -21,15 +22,16 @@ namespace ShopifyInventory.Controllers
 
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var items = _context.Items!.Where(i => !i.IsDeleted).OrderBy(i => i.Created).Select(i => new ItemModel() 
+            var username = HttpContext.User.Identity!.Name;
+            var items = await _context.Items!.Where(i => !i.IsDeleted && i.Username == username).OrderBy(i => i.Created).Select(i => new ItemModel() 
             { 
                 Id = i.Id,
                 Name = i.Name,
                 Description = i.Description,
                 Quantity = i.Quantity
-            }).ToList();
+            }).ToListAsync();
             return View(items);
         }
 
@@ -37,6 +39,9 @@ namespace ShopifyInventory.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            var username = HttpContext.User.Identity!.Name;
+            _logger.LogInformation("{0} is trying to create a new item", username);
+
             var item = new ItemModel();
             return View(item);
         }
@@ -48,13 +53,16 @@ namespace ShopifyInventory.Controllers
             if (!ModelState.IsValid)
                 ModelState.AddModelError("Model", "Invalid properties");
 
+            var username = HttpContext.User.Identity!.Name;
             var newItem = new Item()
             {
                 Name = itemModel.Name,
                 Quantity = itemModel.Quantity,
-                Description = itemModel.Description
+                Description = itemModel.Description,
+                Username = username!
             };
 
+            _logger.LogInformation("Saving newly created item by {0} to database", username);
             try
             {
                 await _context.AddAsync(newItem);
@@ -147,7 +155,8 @@ namespace ShopifyInventory.Controllers
         [HttpGet]
         public IActionResult Archive()
         {
-            var items = _context.Items!.Where(i => i.IsDeleted).OrderBy(i => i.DeletedAt).Select(i => new ItemModel()
+            var username = HttpContext.User.Identity!.Name;
+            var items = _context.Items!.Where(i => i.IsDeleted && i.Username == username).OrderBy(i => i.DeletedAt).Select(i => new ItemModel()
             {
                 Id = i.Id,
                 Name = i.Name,
