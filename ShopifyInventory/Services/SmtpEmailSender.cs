@@ -28,8 +28,11 @@ namespace ShopifyInventory.Services
 
         public async Task Execute(string email, string subject, string htmlMessage)
         {
+            var apiKey = Environment.GetEnvironmentVariable("APIKEY") ?? _options.Value.ApiKey;
+            var secretKey = Environment.GetEnvironmentVariable("SECRETKEY") ?? _options.Value.SecretKey;
             var user = await _userManager.FindByEmailAsync(email);
-            MailjetClient client = new MailjetClient($"{_options.Value.Username}", $"{_options.Value.Password}")
+
+            MailjetClient client = new MailjetClient($"{apiKey}", $"{secretKey}")
             {
                 //Version = ApiVersion.V3_1,
             };
